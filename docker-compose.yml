@@ -23,3 +23,11 @@ services:
       - 8000:8000
     depends_on:
       - db
+  web:
+    container_name: web
+    build: ./library_front
+    command: npm start
+    ports:
+      - 3000:3000
+    depends_on:
+      - app
