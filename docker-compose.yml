@@ -10,3 +10,16 @@ services:
       - POSTGRES_DB=library_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
+  app:
+    container_name: app
+    build: ./library_back
+    command: >
+        sh -c "python manage.py makemigrations
+        && python manage.py migrate
+        && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./library_back:/backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
