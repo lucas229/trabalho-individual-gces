@@ -7,19 +7,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - run: docker-compose up -d
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Build
+      run: docker-compose up -d
 
   test:
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
-        - run: docker-compose run app sh -c "python manage.py makemigrations; python manage.py migrate; python manage.py test"
-        - run: docker-compose run -e CI=true web npm run test
+        - name: Checkout
+          uses: actions/checkout@v3
+        - name: Test (backend)
+          run: docker-compose run app sh -c "python manage.py makemigrations; python manage.py migrate; python manage.py test"
+        - name: Test (frontend)
+          run: docker-compose run -e CI=true web npm run test
 
   lint:
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
-        - run: docker-compose run app sh -c "pip install flake8; flake8 . --exit-zero"
+        - name: Checkout
+          uses: actions/checkout@v3
+        - name: Lint (backend)
+          run: docker-compose run app sh -c "pip install flake8; flake8 . --exit-zero"
+        - name: Lint (frontend)
         - run: docker-compose run web npx eslint src
